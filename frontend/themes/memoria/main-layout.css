@@ -1,0 +1,57 @@
+vaadin-scroller[slot="drawer"] {
+  padding: var(--lumo-space-s);
+}
+
+[slot="drawer"]:is(header, footer) {
+  display: flex;
+  align-items: center;
+  gap: var(--lumo-space-s);
+  padding: var(--lumo-space-s) var(--lumo-space-m);
+  min-height: var(--lumo-size-xl);
+  box-sizing: border-box;
+}
+
+[slot="drawer"]:is(header, footer):is(:empty) {
+  display: none;
+}
+
+/************************************************/
+/* MAIN LAYOUT                                  */
+/************************************************/
+#date-time-container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    font-weight: bold;
+    text-align: center;
+}
+
+.MainLayout-divHeader {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: 80vw;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/************************************************/
+/* COMMONS                                      */
+/************************************************/
+.default-view {
+    padding: 50px;
+    padding-top: 10px;
+}
+
+@media only screen and (max-width: 1026px) {
+    #date-time-container {
+        display: none;
+    }
+
+    .default-view {
+        width: 100%;
+    }
+}
