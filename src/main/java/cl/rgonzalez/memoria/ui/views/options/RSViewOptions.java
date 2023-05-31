@@ -2,7 +2,7 @@ package cl.rgonzalez.memoria.ui.views.options;
 
 import cl.rgonzalez.memoria.exceptions.RSException;
 import cl.rgonzalez.memoria.core.service.RSSrvOptions;
-import cl.rgonzalez.memoria.ui.RSFrontendUtils;
+import cl.rgonzalez.memoria.ui.RSFrontUtils;
 import cl.rgonzalez.memoria.ui.views.RSMainLayout;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.DetachEvent;
@@ -13,11 +13,11 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 
 @PageTitle("Opciones")
 @Route(value = "opciones", layout = RSMainLayout.class)
-@PermitAll
+@RolesAllowed("ADMIN")
 public class RSViewOptions extends VerticalLayout {
 
     private RSSrvOptions srvOptions;
@@ -43,13 +43,13 @@ public class RSViewOptions extends VerticalLayout {
         String txtZone = textZone.getValue();
         if (txtZone == null || txtZone.isEmpty()) {
             textZone.clear();
-            RSFrontendUtils.showWarn("Ingrese zona horaria valida");
+            RSFrontUtils.showWarn("Ingrese zona horaria valida");
             return;
         }
 
         try {
             srvOptions.setZone(txtZone);
-            RSFrontendUtils.showWarn("Opciones actualizadas correctamente");
+            RSFrontUtils.showWarn("Opciones actualizadas correctamente");
         } catch (RSException e) {
             textZone.setInvalid(true);
             textZone.setErrorMessage(e.getMessage());

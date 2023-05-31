@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import cl.rgonzalez.memoria.core.entity.RSUser;
+import cl.rgonzalez.memoria.core.entity.RSEntityUser;
 import cl.rgonzalez.memoria.core.repo.RSRepoUser;
 
 @Service
@@ -25,16 +25,16 @@ public class RSUserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<RSUser> opt = userRepository.findByUsername(username);
+        Optional<RSEntityUser> opt = userRepository.findByUsername(username);
         if (opt.isEmpty()) {
             throw new UsernameNotFoundException("No user present with username: " + username);
         } else {
-            RSUser user = opt.get();
+            RSEntityUser user = opt.get();
             return new User(user.getUsername(), user.getHashedPassword(), getAuthorities(user));
         }
     }
 
-    private static List<GrantedAuthority> getAuthorities(RSUser user) {
+    private static List<GrantedAuthority> getAuthorities(RSEntityUser user) {
         return user.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                 .collect(Collectors.toList());
 

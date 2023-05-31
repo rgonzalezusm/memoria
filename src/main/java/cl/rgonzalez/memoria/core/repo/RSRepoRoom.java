@@ -1,9 +1,8 @@
 package cl.rgonzalez.memoria.core.repo;
 
+import cl.rgonzalez.memoria.core.entity.RSEntityRoom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import cl.rgonzalez.memoria.core.entity.RSEntityOptions;
 
-public interface RSRepoOptions extends JpaRepository<RSEntityOptions, Long>, JpaSpecificationExecutor<RSEntityOptions> {
-
+public interface RSRepoRoom extends JpaRepository<RSEntityRoom, Long>, JpaSpecificationExecutor<RSEntityRoom> {
 }

@@ -1,7 +1,7 @@
-package cl.rgonzalez.memoria.ui.views.user;
+package cl.rgonzalez.memoria.ui.views.rooms;
 
-import cl.rgonzalez.memoria.core.entity.RSEntityUser;
-import cl.rgonzalez.memoria.core.service.RSSrvUser;
+import cl.rgonzalez.memoria.core.entity.RSEntityRoom;
+import cl.rgonzalez.memoria.core.service.RSSrvRoom;
 import cl.rgonzalez.memoria.ui.RSFrontUtils;
 import cl.rgonzalez.memoria.ui.views.RSMainLayout;
 import com.vaadin.flow.component.AttachEvent;
@@ -18,56 +18,52 @@ import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 import lombok.extern.slf4j.Slf4j;
 
-@PageTitle("Usuarios > Editar")
-@Route(value = "usuarios/editar", layout = RSMainLayout.class)
+@PageTitle("Salas > Editar")
+@Route(value = "salas/editar", layout = RSMainLayout.class)
 @RolesAllowed("ADMIN")
 @Slf4j
-public class RSViewUserEdit extends VerticalLayout {
+public class RSViewRoomEdit extends VerticalLayout {
 
-    private RSSrvUser srvUser;
+    private RSSrvRoom srvRoom;
     //
-    private RSViewUserForm formUser;
+    private RSViewRoomForm formRoom;
     private Button buttonEdit = new Button("Editar");
     private Button buttonBack = new Button("Volver");
     //
-    private RSEntityUser user = null;
+    private RSEntityRoom room = null;
 
-    public RSViewUserEdit(RSSrvUser srvUser) {
-        this.srvUser = srvUser;
+    public RSViewRoomEdit(RSSrvRoom srvRoom) {
+        this.srvRoom = srvRoom;
         addClassName("default-view");
 
-        this.formUser = new RSViewUserForm(srvUser);
-        this.formUser.setWidth("300px");
+        this.formRoom = new RSViewRoomForm(srvRoom);
+        this.formRoom.setWidth("300px");
 
-        add(formUser);
+        add(formRoom);
         add(new HorizontalLayout(buttonEdit, buttonBack));
 
         buttonEdit.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         buttonEdit.addClickListener(e -> editAction());
-        buttonBack.addClickListener(e -> UI.getCurrent().navigate("usuarios"));
+        buttonBack.addClickListener(e -> UI.getCurrent().navigate("salas"));
     }
 
     private void editAction() {
         try {
-            formUser.getBinder().writeBean(user);
-            user.setRoles(formUser.getRoles());
-            srvUser.save(user);
+            formRoom.getBinder().writeBean(room);
 
-            RSFrontUtils.showInfo("Usuario editado correctamente");
-            UI.getCurrent().navigate("usuarios");
+            RSFrontUtils.showInfo("Sala editada correctamente");
+            UI.getCurrent().navigate("salas");
         } catch (ValidationException e) {
-            log.error("Error al editar usuario", e);
-            RSFrontUtils.showError("Error al editar usuario");
+            log.error("Error al editar sala", e);
+            RSFrontUtils.showError("Error al editar sala");
         }
     }
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
-
-        user = ComponentUtil.getData(UI.getCurrent(), RSEntityUser.class);
-        formUser.setUser(user);
-
+        room = ComponentUtil.getData(UI.getCurrent(), RSEntityRoom.class);
+        formRoom.setUser(room);
     }
 
     @Override

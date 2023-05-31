@@ -1,6 +1,7 @@
-package cl.rgonzalez.memoria.ui.views.user;
+package cl.rgonzalez.memoria.ui.views.rooms;
 
-import cl.rgonzalez.memoria.core.entity.RSEntityUser;
+import cl.rgonzalez.memoria.core.entity.RSEntityRoom;
+import cl.rgonzalez.memoria.core.service.RSSrvRoom;
 import cl.rgonzalez.memoria.ui.RSFrontUtils;
 import cl.rgonzalez.memoria.ui.views.RSMainLayout;
 import com.vaadin.flow.component.AttachEvent;
@@ -15,52 +16,51 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 import lombok.extern.slf4j.Slf4j;
-import cl.rgonzalez.memoria.core.service.RSSrvUser;
 
-@PageTitle("Usuarios > Editar")
-@Route(value = "usuarios/eliminar", layout = RSMainLayout.class)
+@PageTitle("Salas > Eliminar")
+@Route(value = "salas/eliminar", layout = RSMainLayout.class)
 @RolesAllowed("ADMIN")
 @Slf4j
-public class RSViewUserDelete extends VerticalLayout {
+public class RSViewRoomDelete extends VerticalLayout {
 
-    private RSSrvUser srvUser;
+    private RSSrvRoom srvRoom;
     //
-    private RSViewUserForm formUser;
+    private RSViewRoomForm formRoom;
     private Button buttonDelete = new Button("Eliminar");
     private Button buttonBack = new Button("Volver");
     //
-    private RSEntityUser user = null;
+    private RSEntityRoom room = null;
 
-    public RSViewUserDelete(RSSrvUser srvUser) {
-        this.srvUser = srvUser;
+    public RSViewRoomDelete(RSSrvRoom srvRoom) {
+        this.srvRoom = srvRoom;
         addClassName("default-view");
 
-        this.formUser = new RSViewUserForm(srvUser);
-        this.formUser.setWidth("300px");
-        this.formUser.getTextUser().setReadOnly(true);
-        this.formUser.getTextName().setReadOnly(true);
-//        this.formUser.getCheckboxRoles().setReadOnly(true);
+        this.formRoom = new RSViewRoomForm(srvRoom);
+        this.formRoom.setWidth("300px");
+        this.formRoom.getTextNumber().setReadOnly(true);
+        this.formRoom.getTextName().setReadOnly(true);
+        this.formRoom.getTextCapacity().setReadOnly(true);
+        this.formRoom.getTextareaDescription().setReadOnly(true);
 
-        add(formUser);
+        add(formRoom);
         add(new HorizontalLayout(buttonDelete, buttonBack));
 
         buttonDelete.addThemeVariants(ButtonVariant.LUMO_ERROR);
         buttonDelete.addClickListener(e -> deleteAction());
-        buttonBack.addClickListener(e -> UI.getCurrent().navigate("usuarios"));
+        buttonBack.addClickListener(e -> UI.getCurrent().navigate("salas"));
     }
 
     private void deleteAction() {
-        srvUser.delete(user);
+        srvRoom.delete(room);
         RSFrontUtils.showInfo("Usuario eliminado");
-        UI.getCurrent().navigate("usuarios");
+        UI.getCurrent().navigate("salas");
     }
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
-
-        user = ComponentUtil.getData(UI.getCurrent(), RSEntityUser.class);
-        formUser.getBinder().readBean(user);
+        room = ComponentUtil.getData(UI.getCurrent(), RSEntityRoom.class);
+        formRoom.getBinder().readBean(room);
     }
 
     @Override

@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import cl.rgonzalez.memoria.core.entity.RSUser;
+import cl.rgonzalez.memoria.core.entity.RSEntityUser;
 import cl.rgonzalez.memoria.core.repo.RSRepoUser;
 
 @Component
@@ -20,7 +20,7 @@ public class RSAuthenticatedUser {
         this.authenticationContext = authenticationContext;
     }
 
-    public Optional<RSUser> get() {
+    public Optional<RSEntityUser> get() {
         Optional<UserDetails> opt = authenticationContext.getAuthenticatedUser(UserDetails.class);
         if (opt.isEmpty()) {
             return Optional.empty();

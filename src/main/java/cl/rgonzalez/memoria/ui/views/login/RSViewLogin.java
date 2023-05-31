@@ -31,7 +31,7 @@ public class RSViewLogin extends LoginOverlay implements BeforeEnterObserver {
         LoginI18n i18n = LoginI18n.createDefault();
         i18n.setHeader(new LoginI18n.Header());
         i18n.getHeader().setTitle("Reserva");
-//        i18n.getHeader().setDescription("Login using user/user or admin/admin");
+        i18n.getHeader().setDescription("De Salas Computacionales");
         i18n.setAdditionalInformation(null);
         i18n.setForm(form);
         setI18n(i18n);

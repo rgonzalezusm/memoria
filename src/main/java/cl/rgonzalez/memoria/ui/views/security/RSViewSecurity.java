@@ -1,9 +1,9 @@
 package cl.rgonzalez.memoria.ui.views.security;
 
-import cl.rgonzalez.memoria.core.entity.RSUser;
+import cl.rgonzalez.memoria.core.entity.RSEntityUser;
 import cl.rgonzalez.memoria.core.service.RSSrvUser;
 import cl.rgonzalez.memoria.security.RSAuthenticatedUser;
-import cl.rgonzalez.memoria.ui.RSFrontendUtils;
+import cl.rgonzalez.memoria.ui.RSFrontUtils;
 import cl.rgonzalez.memoria.ui.views.RSMainLayout;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -30,7 +30,6 @@ public class RSViewSecurity extends VerticalLayout {
     private PasswordField textPass01 = new PasswordField("Ingrese Nuevo Password");
     private PasswordField textPass02 = new PasswordField("Reingrese Password");
     private Button buttonChangePassword = new Button("Cambiar Password");
-    ;
 
     public RSViewSecurity(RSAuthenticatedUser authenticatedUser, PasswordEncoder passwordEncoder, RSSrvUser srvUser) {
         this.authenticatedUser = authenticatedUser;
@@ -51,9 +50,9 @@ public class RSViewSecurity extends VerticalLayout {
     }
 
     private void changePassword() {
-        Optional<RSUser> opt = authenticatedUser.get();
+        Optional<RSEntityUser> opt = authenticatedUser.get();
         if (opt.isEmpty()) {
-            RSFrontendUtils.showWarn("Sin usuario");
+            RSFrontUtils.showWarn("Sin usuario");
             return;
         }
 
@@ -61,15 +60,15 @@ public class RSViewSecurity extends VerticalLayout {
         String value2 = textPass02.getValue();
 
         if (value1.equals(value2)) {
-            RSUser user = opt.get();
+            RSEntityUser user = opt.get();
             user.setHashedPassword(passwordEncoder.encode(value1));
             srvUser.save(user);
-            RSFrontendUtils.showInfo("Password Editado correctamente");
+            RSFrontUtils.showInfo("Password Editado correctamente");
             UI.getCurrent().navigate("pos");
         } else {
             textPass01.clear();
             textPass02.clear();
-            RSFrontendUtils.showWarn("Los Passwords no coinciden");
+            RSFrontUtils.showWarn("Los Passwords no coinciden");
         }
     }
 }
