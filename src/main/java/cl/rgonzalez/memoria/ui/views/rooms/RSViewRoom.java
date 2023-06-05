@@ -51,7 +51,7 @@ public class RSViewRoom extends VerticalLayout {
 
     private Component createGrid() {
         grid = new Grid<>();
-        grid.setWidth("900px");
+        grid.setWidth("1200px");
         grid.setHeight("55vh");
         grid.addThemeVariants(GridVariant.LUMO_COLUMN_BORDERS, GridVariant.LUMO_COLUMN_BORDERS, GridVariant.LUMO_ROW_STRIPES);
         grid.addColumn(e -> e.getNumber()).setHeader("Nro").setWidth("80px");

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -25,7 +26,7 @@ public class RSSrvOptions {
             RSEntityOptions opt = opts.get(0);
             return opt.getZone();
         } else {
-            throw new RSServerException("Se encontraron mas de una opcion");
+            throw new RSServerException("Mas de una opcion encontradas");
         }
     }
 

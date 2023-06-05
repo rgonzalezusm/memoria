@@ -27,14 +27,14 @@ public class RSEntityReservation extends RSAbstractEntity {
     @Column(name="type")
     private Integer type;
 
-    @Column(name="reservation_year")
+    @Column(name="the_year")
     private Integer year;
 
-    @Column(name="reservation_semester")
+    @Column(name="semester")
     private Integer semester;
 
-    @Column(name="reservation_day")
-    private Integer day;
+    @Column(name="the_day_of_week")
+    private Integer dayOfWeek;
 
     @Column(name="eventual_month")
     private Integer eventualMonth;

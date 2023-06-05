@@ -19,4 +19,8 @@ public enum RSReservationType {
     public String getName() {
         return name;
     }
+
+    public static RSReservationType get(Integer type) {
+        return type == 1 ? SEMESTRAL : type == 2 ? EVENTUAL : null;
+    }
 }

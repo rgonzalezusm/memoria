@@ -1,8 +1,6 @@
 package cl.rgonzalez.memoria.ui;
 
-import cl.rgonzalez.memoria.core.RSBlock;
-import cl.rgonzalez.memoria.core.dto.RSDtoReservation;
-import cl.rgonzalez.memoria.core.dto.RSDtoReservationSemestralRow;
+import cl.rgonzalez.memoria.core.RSDayOfWeek;
 import cl.rgonzalez.memoria.core.entity.RSEntityRoom;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
@@ -12,6 +10,7 @@ import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
@@ -21,11 +20,17 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public final class RSFrontUtils {
+
+    public static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss Z");
+    public static final DateTimeFormatter DTF2 = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
     private RSFrontUtils() {
     }
@@ -131,4 +136,20 @@ public final class RSFrontUtils {
         dialog.open();
     }
 
+    public static String format(ZonedDateTime zdate) {
+        return zdate.format(DTF);
+    }
+    public static String format(ZonedDateTime zdate, ZoneId zone) {
+        return zdate.withZoneSameInstant(zone).format(DTF2);
+    }
+
+    public static String formatDayOfWeek(int dow) {
+        RSDayOfWeek dayOfWeek = RSDayOfWeek.getById(dow).orElseThrow();
+        return dayOfWeek.getName();
+    }
+
+    public static String formatDayOfWeeek(Integer dayOfWeek) {
+        RSDayOfWeek day = RSDayOfWeek.getById(dayOfWeek).orElseThrow();
+        return day.getName();
+    }
 }

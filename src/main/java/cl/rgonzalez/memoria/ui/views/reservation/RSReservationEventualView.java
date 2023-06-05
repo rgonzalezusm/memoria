@@ -1,10 +1,7 @@
 package cl.rgonzalez.memoria.ui.views.reservation;
 
 import cl.rgonzalez.memoria.core.RSBlock;
-import cl.rgonzalez.memoria.core.RSDay;
-import cl.rgonzalez.memoria.core.dto.RSDtoReservation;
 import cl.rgonzalez.memoria.core.dto.RSDtoReservationEventualRow;
-import cl.rgonzalez.memoria.core.dto.RSDtoReservationSemestralRow;
 import cl.rgonzalez.memoria.core.entity.RSEntityRoom;
 import cl.rgonzalez.memoria.core.entity.RSEntityUser;
 import cl.rgonzalez.memoria.core.service.RSSrvReservation;
@@ -20,7 +17,6 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;

@@ -1,12 +1,19 @@
 package cl.rgonzalez.memoria.ui.views;
 
 import cl.rgonzalez.memoria.core.RSRole;
+import cl.rgonzalez.memoria.core.entity.RSEntityUser;
 import cl.rgonzalez.memoria.security.RSAuthenticatedUser;
+import cl.rgonzalez.memoria.ui.components.appnav.RSAppNav;
+import cl.rgonzalez.memoria.ui.components.appnav.RSAppNavItem;
+import cl.rgonzalez.memoria.ui.views.home.RSHomeView;
+import cl.rgonzalez.memoria.ui.views.options.RSViewOptions;
 import cl.rgonzalez.memoria.ui.views.reservation.RSReservationEventualView;
 import cl.rgonzalez.memoria.ui.views.reservation.RSReservationSemesterView;
 import cl.rgonzalez.memoria.ui.views.reservations.RSReservationsView;
+import cl.rgonzalez.memoria.ui.views.rooms.RSViewRoom;
 import cl.rgonzalez.memoria.ui.views.rooms.RSViewRoomForUser;
 import cl.rgonzalez.memoria.ui.views.security.RSViewSecurity;
+import cl.rgonzalez.memoria.ui.views.user.RSViewUser;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -19,16 +26,9 @@ import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+import org.vaadin.lineawesome.LineAwesomeIcon;
 
 import java.util.Optional;
-
-import cl.rgonzalez.memoria.ui.components.appnav.RSAppNav;
-import cl.rgonzalez.memoria.ui.components.appnav.RSAppNavItem;
-import cl.rgonzalez.memoria.core.entity.RSEntityUser;
-import cl.rgonzalez.memoria.ui.views.options.RSViewOptions;
-import cl.rgonzalez.memoria.ui.views.rooms.RSViewRoom;
-import cl.rgonzalez.memoria.ui.views.user.RSViewUser;
-import org.vaadin.lineawesome.LineAwesomeIcon;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -76,6 +76,10 @@ public class RSMainLayout extends AppLayout {
         // AppNav is not yet an official component.
         // For documentation, visit https://github.com/vaadin/vcf-nav#readme
         RSAppNav nav = new RSAppNav();
+
+        if (accessChecker.hasAccess(RSHomeView.class)) {
+            nav.addItem(new RSAppNavItem("Inicio", RSHomeView.class, LineAwesomeIcon.HOME_SOLID.create()));
+        }
 
         if (accessChecker.hasAccess(RSReservationSemesterView.class)) {
             nav.addItem(new RSAppNavItem("Reserva Semestral", RSReservationSemesterView.class, LineAwesomeIcon.HAND_POINT_UP_SOLID.create()));

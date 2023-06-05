@@ -2,14 +2,11 @@ package cl.rgonzalez.memoria.ui.views.reservations;
 
 import cl.rgonzalez.memoria.core.RSBlock;
 import cl.rgonzalez.memoria.core.RSDayOfWeek;
-import cl.rgonzalez.memoria.core.RSReservationType;
 import cl.rgonzalez.memoria.core.entity.RSEntityReservation;
 import cl.rgonzalez.memoria.core.entity.RSEntityRoom;
-import cl.rgonzalez.memoria.core.service.RSSrvOptions;
 import cl.rgonzalez.memoria.core.service.RSSrvReservation;
 import cl.rgonzalez.memoria.core.service.RSSrvRoom;
 import cl.rgonzalez.memoria.ui.RSFrontUtils;
-import cl.rgonzalez.memoria.ui.views.RSMainLayout;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.DetachEvent;
@@ -18,40 +15,33 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-import jakarta.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@PageTitle("Reservas")
-@Route(value = "reservas", layout = RSMainLayout.class)
-@RolesAllowed("ADMIN")
-public class RSReservationsView extends VerticalLayout {
+//@PageTitle("Reservas")
+//@Route(value = "reservas", layout = RSMainLayout.class)
+//@RolesAllowed("ADMIN")
+public class RSReservationsView_bkp extends VerticalLayout {
 
     private RSSrvRoom srvRoom;
     private RSSrvReservation srvReservation;
-    private RSSrvOptions srvOptions;
     //
-    private Grid<RSEntityReservation> grid;
+    private Grid<Row> grid;
     private ComboBox<RSEntityRoom> comboRoom = new ComboBox<>("Sala");
     private ComboBox<Integer> comboYear = new ComboBox<>("Año");
     private ComboBox<Integer> comboSemester = new ComboBox<>("Semestre");
     //
     private List<RSEntityRoom> rooms;
-    private ZoneId zone;
 
-    public RSReservationsView(RSSrvRoom srvRoom, RSSrvReservation srvReservation, RSSrvOptions srvOptions) {
+    public RSReservationsView_bkp(RSSrvRoom srvRoom, RSSrvReservation srvReservation) {
         this.srvRoom = srvRoom;
         this.srvReservation = srvReservation;
-        this.srvOptions = srvOptions;
         addClassName("default-view");
 
         add(createButtonsArea());
@@ -91,18 +81,15 @@ public class RSReservationsView extends VerticalLayout {
     private Component createGrid() {
         grid = new Grid<>();
         grid.addThemeVariants(GridVariant.LUMO_COLUMN_BORDERS, GridVariant.LUMO_COLUMN_BORDERS, GridVariant.LUMO_ROW_STRIPES);
-        grid.setWidth("1400px");
+
+        grid.setWidth("1300px");
         grid.setHeight("70vh");
-        grid.addColumn(r -> RSFrontUtils.format(r.getReservationDate(), zone)).setHeader("Hora").setWidth("200px");
-        grid.addColumn(r -> r.getUser().getName()).setHeader("Usuario").setWidth("120px");
-        grid.addColumn(r -> RSReservationType.get(r.getType()).getName()).setHeader("Tipo").setWidth("120px");
-        grid.addColumn(r -> r.getYear()).setHeader("Año").setWidth("80px");
-        grid.addColumn(r -> r.getSemester()).setHeader("Semestre").setWidth("80px");
-        grid.addColumn(r -> r.getRoom().getNumber()).setHeader("Sala").setWidth("80px");
-        grid.addColumn(r -> r.getBlock()).setHeader("Bloque").setWidth("80px");
-        grid.addColumn(r -> RSFrontUtils.formatDayOfWeeek(r.getDayOfWeek())).setHeader("Dia Semana").setWidth("80px");
-        grid.addColumn(r -> r.getEventualMonth()).setHeader("Ev. Mes").setWidth("80px");
-        grid.addColumn(r -> r.getEventualDay()).setHeader("Ev. Dia").setWidth("80px");
+        grid.addColumn(e -> e.getBlock().formatRange()).setHeader("Hora").setWidth("140px");
+        grid.addColumn(e -> e.getClassId()).setHeader("Clase").setWidth("70px");
+
+        for (RSDayOfWeek day : RSDayOfWeek.values()) {
+            grid.addColumn(e -> e.getMap().get(day).getUser().getName()).setHeader(day.getName()).setWidth("180px");
+        }
 
         return grid;
     }
@@ -130,17 +117,14 @@ public class RSReservationsView extends VerticalLayout {
         comboYear.setValue(year);
 
         int semester = RSFrontUtils.findSemester();
-        comboSemester.setItems(1, 2);
+        comboSemester.setItems(new Integer[]{1, 2});
         comboSemester.setValue(semester);
-
-        this.zone = ZoneId.of(srvOptions.getZone());
 
         if (!rooms.isEmpty()) {
             List<RSEntityReservation> reservations = srvReservation.findAll(rooms.get(0), year, semester);
-//            for (RSEntityReservation r : reservations) {
-//                System.out.println(r);
-//            }
-            grid.setItems(reservations);
+            for (RSEntityReservation r : reservations) {
+                System.out.println(r);
+            }
         }
     }
 

@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -41,7 +40,7 @@ public class RSSrvReservation {
             r.setType(RSReservationType.SEMESTRAL.getValue());
             r.setYear(year);
             r.setSemester(semester);
-            r.setDay(res.getDay().getValue());
+            r.setDayOfWeek(res.getDay().getValue());
             list.add(r);
         }
 
@@ -64,7 +63,7 @@ public class RSSrvReservation {
             r.setYear(date.getYear());
             r.setSemester(RSFrontUtils.findSemester(date));
             r.setEventualMonth(date.getMonthValue());
-            r.setEventualDay(date.getDayOfWeek().getValue());
+            r.setEventualDay(date.getDayOfMonth());
             list.add(r);
         }
         repoReservation.saveAll(list);
@@ -86,8 +85,7 @@ public class RSSrvReservation {
         return r;
     }
 
-    public void findAll(RSEntityRoom room, int year, int semester, LocalDate now) {
-
-
+    public List<RSEntityReservation> findAll(RSEntityRoom room, int year, int semester) {
+        return repoReservation.findByRoomAndYearAndSemester(room, year, semester);
     }
 }

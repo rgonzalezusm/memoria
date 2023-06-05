@@ -1,7 +1,7 @@
 package cl.rgonzalez.memoria.ui.views.reservation;
 
 import cl.rgonzalez.memoria.core.RSBlock;
-import cl.rgonzalez.memoria.core.RSDay;
+import cl.rgonzalez.memoria.core.RSDayOfWeek;
 import cl.rgonzalez.memoria.core.dto.RSDtoReservation;
 import cl.rgonzalez.memoria.core.dto.RSDtoReservationSemestralRow;
 import cl.rgonzalez.memoria.core.entity.RSEntityRoom;
@@ -34,7 +34,6 @@ import java.util.*;
 
 @PageTitle("Reserva Semestral")
 @Route(value = "reserva_semestral", layout = RSMainLayout.class)
-@RouteAlias(value = "", layout = RSMainLayout.class)
 @PermitAll
 public class RSReservationSemesterView extends VerticalLayout {
 
@@ -48,6 +47,7 @@ public class RSReservationSemesterView extends VerticalLayout {
     private ComboBox<Integer> comboSemester = new ComboBox<>("Semestre");
     private Button buttonOk = new Button("Reservar");
     private Button buttonRoomDescription = new Button(VaadinIcon.FILE_TEXT.create());
+    private Grid<RSDtoReservationSemestralRow> grid = new Grid<>();
     //
     private List<RSEntityRoom> rooms;
 
@@ -91,12 +91,11 @@ public class RSReservationSemesterView extends VerticalLayout {
     }
 
     private Component createBlocksGrid() {
-        Grid<RSDtoReservationSemestralRow> grid = new Grid<>();
         grid.setWidth("900px");
         grid.setHeight("660px");
-        grid.addColumn(e->e.getBlock().formatRange()).setHeader("Hora").setWidth("120px");
+        grid.addColumn(e -> e.getBlock().formatRange()).setHeader("Hora").setWidth("120px");
         grid.addColumn(e -> e.getBlock().getValue()).setHeader("Clase").setWidth("50px");
-        for (RSDay day : RSDay.values()) {
+        for (RSDayOfWeek day : RSDayOfWeek.values()) {
             grid.addColumn(
                     new ComponentRenderer<>(
                             row -> {
@@ -113,16 +112,7 @@ public class RSReservationSemesterView extends VerticalLayout {
             ).setHeader(day.getName()).setWidth("60px");
         }
 
-        rows = new ArrayList<>();
-        for (RSBlock block : RSBlock.values()) {
-            Map<RSDay, Boolean> map = new HashMap<>();
-            for (RSDay day : RSDay.values()) {
-                map.put(day, false);
-            }
-            rows.add(new RSDtoReservationSemestralRow(block, map));
-        }
-        grid.setItems(rows);
-
+        clearRows();
         return grid;
     }
 
@@ -141,7 +131,7 @@ public class RSReservationSemesterView extends VerticalLayout {
 
         List<RSDtoReservation> reservations = new ArrayList<>();
         for (RSDtoReservationSemestralRow row : rows) {
-            for (RSDay day : RSDay.values()) {
+            for (RSDayOfWeek day : RSDayOfWeek.values()) {
                 Boolean reserved = row.getMap().get(day);
                 if (reserved) {
                     reservations.add(new RSDtoReservation(row.getBlock(), day));
@@ -149,8 +139,30 @@ public class RSReservationSemesterView extends VerticalLayout {
             }
         }
 
-        srvReservation.saveSemestral(znow, user, room, year, semester, reservations);
+        if (reservations.isEmpty()) {
+            RSFrontUtils.showWarn("Seleccione al menos un bloque");
+            return;
+        }
 
+        srvReservation.saveSemestral(znow, user, room, year, semester, reservations);
+        RSFrontUtils.showInfo("Reserva realizada");
+        clear();
+    }
+
+    private void clear() {
+        clearRows();
+    }
+
+    private void clearRows() {
+        rows = new ArrayList<>();
+        for (RSBlock block : RSBlock.values()) {
+            Map<RSDayOfWeek, Boolean> map = new HashMap<>();
+            for (RSDayOfWeek day : RSDayOfWeek.values()) {
+                map.put(day, false);
+            }
+            rows.add(new RSDtoReservationSemestralRow(block, map));
+        }
+        grid.setItems(rows);
     }
 
     @Override

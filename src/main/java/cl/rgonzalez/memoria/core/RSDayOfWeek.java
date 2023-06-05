@@ -5,7 +5,7 @@ import java.util.Optional;
 /**
  *
  */
-public enum RSDay {
+public enum RSDayOfWeek {
 
     LUNES(1, "Lunes"),
     MARTES(2, "Martes"),
@@ -17,7 +17,7 @@ public enum RSDay {
     private int value;
     private String name;
 
-    RSDay(int value, String name) {
+    RSDayOfWeek(int value, String name) {
         this.value = value;
         this.name = name;
     }
@@ -30,7 +30,7 @@ public enum RSDay {
         return name;
     }
 
-    public static Optional<RSDay> getById(int day) {
+    public static Optional<RSDayOfWeek> getById(int day) {
         if (day >= 1 && day <= 6) {
             return Optional.of(values()[day - 1]);
         }

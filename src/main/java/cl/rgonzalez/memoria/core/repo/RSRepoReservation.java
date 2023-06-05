@@ -11,6 +11,6 @@ import java.util.List;
 
 public interface RSRepoReservation extends JpaRepository<RSEntityReservation, Long>, JpaSpecificationExecutor<RSEntityReservation> {
 
-    @Query("SELECT r FROM RSEntityRoom WHERE r.room = ?1 AND year = ?2 AND semester = ?3 AND")
+//    @Query("SELECT r FROM RSEntityRoom WHERE r.room = ?1 AND year = ?2 AND semester = ?3 AND")
     public List<RSEntityReservation> findByRoomAndYearAndSemester(RSEntityRoom room, int year, int semester);
 }
