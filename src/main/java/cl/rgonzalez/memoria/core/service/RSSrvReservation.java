@@ -62,6 +62,7 @@ public class RSSrvReservation {
             r.setType(RSReservationType.EVENTUAL.getValue());
             r.setYear(date.getYear());
             r.setSemester(RSFrontUtils.findSemester(date));
+            r.setDayOfWeek(date.getDayOfWeek().getValue());
             r.setEventualMonth(date.getMonthValue());
             r.setEventualDay(date.getDayOfMonth());
             list.add(r);
