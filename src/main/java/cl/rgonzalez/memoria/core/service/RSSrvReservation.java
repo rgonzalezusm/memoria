@@ -1,8 +1,9 @@
 package cl.rgonzalez.memoria.core.service;
 
 import cl.rgonzalez.memoria.core.RSBlock;
+import cl.rgonzalez.memoria.core.RSDayOfWeek;
 import cl.rgonzalez.memoria.core.RSReservationType;
-import cl.rgonzalez.memoria.core.dto.RSDtoReservation;
+import cl.rgonzalez.memoria.core.dto.RSDtoBlockAndDay;
 import cl.rgonzalez.memoria.core.entity.RSEntityReservation;
 import cl.rgonzalez.memoria.core.entity.RSEntityRoom;
 import cl.rgonzalez.memoria.core.entity.RSEntityUser;
@@ -22,71 +23,90 @@ import java.util.List;
 public class RSSrvReservation {
 
     @Autowired
-    RSRepoReservation repoReservation;
+    RSRepoReservation repo;
 
     public void saveSemestral(
             ZonedDateTime reservationDate, RSEntityUser user,
             RSEntityRoom room, int year, int semester,
-            List<RSDtoReservation> reservations
+            List<RSDtoBlockAndDay> reservations
     ) {
 
         List<RSEntityReservation> list = new ArrayList<>();
-        for (RSDtoReservation res : reservations) {
+        for (RSDtoBlockAndDay res : reservations) {
             RSEntityReservation r = new RSEntityReservation();
+            r.setType(RSReservationType.SEMESTRAL.getValue());
             r.setReservationDate(reservationDate);
             r.setUser(user);
             r.setRoom(room);
             r.setBlock(res.getBlock().getValue());
-            r.setType(RSReservationType.SEMESTRAL.getValue());
             r.setYear(year);
             r.setSemester(semester);
-            r.setDayOfWeek(res.getDay().getValue());
+            r.setSemesterDayOfWeek(res.getDay().getValue());
+            r.setEventualMonth(null);
+            r.setEventualDay(null);
             list.add(r);
         }
 
-        repoReservation.saveAll(list);
+        repo.saveAll(list);
     }
 
     public void saveEventual(
             ZonedDateTime reservationDate, RSEntityUser user,
-            RSEntityRoom room, LocalDate date,
-            List<RSBlock> blocks
+            RSEntityRoom room, LocalDate date, List<RSBlock> blocks
     ) {
         List<RSEntityReservation> list = new ArrayList<>();
         for (RSBlock block : blocks) {
             RSEntityReservation r = new RSEntityReservation();
+            r.setType(RSReservationType.EVENTUAL.getValue());
             r.setReservationDate(reservationDate);
             r.setUser(user);
             r.setRoom(room);
             r.setBlock(block.getValue());
-            r.setType(RSReservationType.EVENTUAL.getValue());
             r.setYear(date.getYear());
             r.setSemester(RSFrontUtils.findSemester(date));
-            r.setDayOfWeek(date.getDayOfWeek().getValue());
+            r.setSemesterDayOfWeek(null);
             r.setEventualMonth(date.getMonthValue());
             r.setEventualDay(date.getDayOfMonth());
             list.add(r);
         }
-        repoReservation.saveAll(list);
+        repo.saveAll(list);
     }
 
-    private RSEntityReservation create(
-            ZonedDateTime reservationDate,
-            RSEntityUser user,
-            RSEntityRoom room,
-            RSBlock block,
-            RSReservationType type
-    ) {
-        RSEntityReservation r = new RSEntityReservation();
-        r.setReservationDate(reservationDate);
-        r.setUser(user);
-        r.setRoom(room);
-        r.setBlock(block.getValue());
-        r.setType(type.getValue());
-        return r;
+    public List<RSEntityReservation> findByRoomAndSemester(RSEntityRoom room, Integer year, Integer semester) {
+        return repo.findByRoomAndYearAndSemester(room, year, semester);
     }
 
-    public List<RSEntityReservation> findAll(RSEntityRoom room, int year, int semester) {
-        return repoReservation.findByRoomAndYearAndSemester(room, year, semester);
+    public List<RSEntityReservation> findBySemester(Integer year, Integer semester) {
+        return repo.findByYearAndSemester(year, semester);
     }
+
+    public List<RSEntityReservation> findByUser(RSEntityUser user) {
+        return repo.findByUser(user);
+    }
+
+    public List<RSEntityReservation> findSemestralReservations(RSEntityRoom room, int year, Integer semester, List<RSDtoBlockAndDay> reservations) {
+        List<RSEntityReservation> list = new ArrayList<>();
+        for (RSDtoBlockAndDay r : reservations) {
+            RSBlock block = r.getBlock();
+            RSDayOfWeek day = r.getDay();
+            List<RSEntityReservation> existing = repo.findSemestralReservations(room, year, semester, block.getValue(), day.getValue());
+            list.addAll(existing);
+        }
+        return list;
+    }
+
+    public List<RSEntityReservation> findEventualReservations(RSEntityRoom room, LocalDate reservationDate, List<RSBlock> blocks) {
+        int year = reservationDate.getYear();
+        int month = reservationDate.getMonthValue();
+        int day = reservationDate.getDayOfMonth();
+
+        List<RSEntityReservation> list = new ArrayList<>();
+        for (RSBlock block : blocks) {
+            List<RSEntityReservation> existing = repo.findEventualReservations(room, block.getValue(), year, month, day);
+            list.addAll(existing);
+        }
+        return list;
+    }
+
+
 }

@@ -7,10 +7,12 @@ import jakarta.persistence.*;
 import java.util.Set;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "rs_user")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class RSEntityUser extends RSAbstractEntity {
 
     @Column(name = "username", unique = true, length = 128)

@@ -2,8 +2,9 @@ package cl.rgonzalez.memoria.ui.views.reservation;
 
 import cl.rgonzalez.memoria.core.RSBlock;
 import cl.rgonzalez.memoria.core.RSDayOfWeek;
-import cl.rgonzalez.memoria.core.dto.RSDtoReservation;
+import cl.rgonzalez.memoria.core.dto.RSDtoBlockAndDay;
 import cl.rgonzalez.memoria.core.dto.RSDtoReservationSemestralRow;
+import cl.rgonzalez.memoria.core.entity.RSEntityReservation;
 import cl.rgonzalez.memoria.core.entity.RSEntityRoom;
 import cl.rgonzalez.memoria.core.entity.RSEntityUser;
 import cl.rgonzalez.memoria.core.service.RSSrvReservation;
@@ -25,7 +26,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
 import jakarta.annotation.security.PermitAll;
 
 import java.time.LocalDate;
@@ -70,7 +70,7 @@ public class RSReservationSemesterView extends VerticalLayout {
 
     private Component createReservationForm() {
         comboYear.setItems(RSFrontUtils.createYears());
-        comboSemester.setItems(new Integer[]{1, 2});
+        comboSemester.setItems(1, 2);
 
         comboRoom.setItemLabelGenerator(RSEntityRoom::getName);
 
@@ -129,18 +129,24 @@ public class RSReservationSemesterView extends VerticalLayout {
         int year = comboYear.getValue();
         Integer semester = comboSemester.getValue();
 
-        List<RSDtoReservation> reservations = new ArrayList<>();
+        List<RSDtoBlockAndDay> reservations = new ArrayList<>();
         for (RSDtoReservationSemestralRow row : rows) {
             for (RSDayOfWeek day : RSDayOfWeek.values()) {
                 Boolean reserved = row.getMap().get(day);
                 if (reserved) {
-                    reservations.add(new RSDtoReservation(row.getBlock(), day));
+                    reservations.add(new RSDtoBlockAndDay(row.getBlock(), day));
                 }
             }
         }
 
         if (reservations.isEmpty()) {
             RSFrontUtils.showWarn("Seleccione al menos un bloque");
+            return;
+        }
+
+        List<RSEntityReservation> existingRes = srvReservation.findSemestralReservations(room, year, semester, reservations);
+        if (!existingRes.isEmpty()) {
+            RSFrontUtils.showWarn("Uno o mas bloques ya se encuentran reservados");
             return;
         }
 

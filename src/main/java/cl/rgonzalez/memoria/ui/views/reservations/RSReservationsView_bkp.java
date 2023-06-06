@@ -121,7 +121,7 @@ public class RSReservationsView_bkp extends VerticalLayout {
         comboSemester.setValue(semester);
 
         if (!rooms.isEmpty()) {
-            List<RSEntityReservation> reservations = srvReservation.findAll(rooms.get(0), year, semester);
+            List<RSEntityReservation> reservations = srvReservation.findByRoomAndSemester(rooms.get(0), year, semester);
             for (RSEntityReservation r : reservations) {
                 System.out.println(r);
             }

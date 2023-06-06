@@ -106,9 +106,9 @@ public class RSMainLayout extends AppLayout {
         if (accessChecker.hasAccess(RSViewUser.class)) {
             nav.addItem(new RSAppNavItem("Usuarios", RSViewUser.class, LineAwesomeIcon.USERS_SOLID.create()));
         }
-        if (accessChecker.hasAccess(RSViewSecurity.class)) {
-            nav.addItem(new RSAppNavItem("Seguridad", RSViewSecurity.class, LineAwesomeIcon.KEY_SOLID.create()));
-        }
+//        if (accessChecker.hasAccess(RSViewSecurity.class)) {
+//            nav.addItem(new RSAppNavItem("Seguridad", RSViewSecurity.class, LineAwesomeIcon.KEY_SOLID.create()));
+//        }
         if (accessChecker.hasAccess(RSViewOptions.class)) {
             nav.addItem(new RSAppNavItem("Opciones", RSViewOptions.class, LineAwesomeIcon.WRENCH_SOLID.create()));
         }

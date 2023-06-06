@@ -40,8 +40,7 @@ public class RSReservationsView extends VerticalLayout {
     private RSSrvReservation srvReservation;
     private RSSrvOptions srvOptions;
     //
-    private Grid<RSEntityReservation> grid;
-    private ComboBox<RSEntityRoom> comboRoom = new ComboBox<>("Sala");
+    private Grid<RSEntityReservation> grid = new Grid<>();
     private ComboBox<Integer> comboYear = new ComboBox<>("Año");
     private ComboBox<Integer> comboSemester = new ComboBox<>("Semestre");
     //
@@ -72,13 +71,11 @@ public class RSReservationsView extends VerticalLayout {
     }
 
     private Component createButtonsArea() {
-        comboRoom.setItemLabelGenerator(RSEntityRoom::getName);
-
         HorizontalLayout hl = new HorizontalLayout();
         hl.setDefaultVerticalComponentAlignment(Alignment.END);
-        hl.add(comboRoom);
         hl.add(comboYear);
         hl.add(comboSemester);
+
         return hl;
     }
 
@@ -89,7 +86,6 @@ public class RSReservationsView extends VerticalLayout {
 //    }
 
     private Component createGrid() {
-        grid = new Grid<>();
         grid.addThemeVariants(GridVariant.LUMO_COLUMN_BORDERS, GridVariant.LUMO_COLUMN_BORDERS, GridVariant.LUMO_ROW_STRIPES);
         grid.setWidth("1400px");
         grid.setHeight("70vh");
@@ -100,10 +96,9 @@ public class RSReservationsView extends VerticalLayout {
         grid.addColumn(r -> r.getSemester()).setHeader("Semestre").setWidth("80px");
         grid.addColumn(r -> r.getRoom().getNumber()).setHeader("Sala").setWidth("80px");
         grid.addColumn(r -> r.getBlock()).setHeader("Bloque").setWidth("80px");
-        grid.addColumn(r -> RSFrontUtils.formatDayOfWeeek(r.getDayOfWeek())).setHeader("Dia Semana").setWidth("80px");
+        grid.addColumn(r -> RSFrontUtils.formatDayOfWeeek(r.getSemesterDayOfWeek())).setHeader("Dia Semana").setWidth("80px");
         grid.addColumn(r -> r.getEventualMonth()).setHeader("Ev. Mes").setWidth("80px");
         grid.addColumn(r -> r.getEventualDay()).setHeader("Ev. Dia").setWidth("80px");
-
         return grid;
     }
 
@@ -121,9 +116,6 @@ public class RSReservationsView extends VerticalLayout {
         super.onAttach(attachEvent);
         rooms = srvRoom.findAll();
 
-        comboRoom.setItems(rooms);
-        comboRoom.setValue(!rooms.isEmpty() ? rooms.get(0) : null);
-
         LocalDate now = LocalDate.now();
         int year = now.getYear();
         comboYear.setItems(RSFrontUtils.createYears());
@@ -135,13 +127,20 @@ public class RSReservationsView extends VerticalLayout {
 
         this.zone = ZoneId.of(srvOptions.getZone());
 
+        comboYear.addValueChangeListener(e -> updateGrid());
+        comboSemester.addValueChangeListener(e -> updateGrid());
+
         if (!rooms.isEmpty()) {
-            List<RSEntityReservation> reservations = srvReservation.findAll(rooms.get(0), year, semester);
-//            for (RSEntityReservation r : reservations) {
-//                System.out.println(r);
-//            }
-            grid.setItems(reservations);
+            updateGrid();
         }
+    }
+
+    private void updateGrid() {
+        Integer year = comboYear.getValue();
+        Integer semester = comboSemester.getValue();
+
+        List<RSEntityReservation> reservations = srvReservation.findBySemester(year, semester);
+        grid.setItems(reservations);
     }
 
     @Override

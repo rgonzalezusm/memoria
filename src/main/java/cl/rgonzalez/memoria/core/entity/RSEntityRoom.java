@@ -2,10 +2,12 @@ package cl.rgonzalez.memoria.core.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "rs_room")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class RSEntityRoom extends RSAbstractEntity {
 
     @Column(nullable = false, unique = true)

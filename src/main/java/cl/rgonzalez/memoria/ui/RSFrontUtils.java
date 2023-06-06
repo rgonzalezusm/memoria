@@ -10,7 +10,6 @@ import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
@@ -23,12 +22,12 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public final class RSFrontUtils {
 
+    public static final int[] SEMESTER1 = new int[]{3, 7};
+    public static final int[] SEMESTER2 = new int[]{8, 12};
     public static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss Z");
     public static final DateTimeFormatter DTF2 = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
@@ -121,7 +120,7 @@ public final class RSFrontUtils {
 
     public static int findSemester(LocalDate date) {
         int month = date.getMonthValue();
-        return month <= 6 ? 1 : 2;
+        return SEMESTER1[0] <= month && month <= SEMESTER1[1] ? 1 : 2;
     }
 
     public static void showRoomDescriptionAction(RSEntityRoom value) {
@@ -139,6 +138,7 @@ public final class RSFrontUtils {
     public static String format(ZonedDateTime zdate) {
         return zdate.format(DTF);
     }
+
     public static String format(ZonedDateTime zdate, ZoneId zone) {
         return zdate.withZoneSameInstant(zone).format(DTF2);
     }
@@ -149,7 +149,19 @@ public final class RSFrontUtils {
     }
 
     public static String formatDayOfWeeek(Integer dayOfWeek) {
+        if (dayOfWeek == null) {
+            return "";
+        }
+
         RSDayOfWeek day = RSDayOfWeek.getById(dayOfWeek).orElseThrow();
         return day.getName();
     }
+
+//    public static LocalDate[] getSemesterRange(Integer year, Integer semester) {
+//        int init = semester == 1 ? SEMESTER1[0] : SEMESTER2[1];
+//        int size = semester == 1 ? SEMESTER1.length : SEMESTER2.length;
+//        LocalDate from = LocalDate.of(year, init, 1);
+//        LocalDate to = from.plusMonths(size);
+//        return new LocalDate[]{from, to};
+//    }
 }

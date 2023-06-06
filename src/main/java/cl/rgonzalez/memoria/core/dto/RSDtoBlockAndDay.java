@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RSDtoReservation {
+public class RSDtoBlockAndDay {
 
     private RSBlock block;
     private RSDayOfWeek day;

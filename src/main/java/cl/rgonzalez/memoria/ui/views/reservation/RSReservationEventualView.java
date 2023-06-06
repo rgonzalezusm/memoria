@@ -2,6 +2,7 @@ package cl.rgonzalez.memoria.ui.views.reservation;
 
 import cl.rgonzalez.memoria.core.RSBlock;
 import cl.rgonzalez.memoria.core.dto.RSDtoReservationEventualRow;
+import cl.rgonzalez.memoria.core.entity.RSEntityReservation;
 import cl.rgonzalez.memoria.core.entity.RSEntityRoom;
 import cl.rgonzalez.memoria.core.entity.RSEntityUser;
 import cl.rgonzalez.memoria.core.service.RSSrvReservation;
@@ -41,6 +42,7 @@ public class RSReservationEventualView extends VerticalLayout {
     //
     private ComboBox<RSEntityRoom> comboRoom = new ComboBox<>("Sala");
     private DatePicker datePicker = new DatePicker("Dia");
+    private Grid<RSDtoReservationEventualRow> grid = new Grid<>();
     private Button buttonOk = new Button("Reservar");
     private Button buttonRoomDescription = new Button(VaadinIcon.FILE_TEXT.create());
     //
@@ -80,7 +82,6 @@ public class RSReservationEventualView extends VerticalLayout {
     }
 
     private Component createBlocksGrid() {
-        Grid<RSDtoReservationEventualRow> grid = new Grid<>();
         grid.setWidth("400px");
         grid.setHeight("660px");
         grid.addColumn(e -> e.getBlock().formatRange()).setHeader("Hora").setWidth("120px");
@@ -126,8 +127,36 @@ public class RSReservationEventualView extends VerticalLayout {
             }
         }
 
-        srvReservation.saveEventual(znow, user, room, reservationDate, blocks);
+        if (blocks.isEmpty()) {
+            RSFrontUtils.showWarn("Seleccione al menos un bloque");
+            return;
+        }
 
+        List<RSEntityReservation> existingRes = srvReservation.findEventualReservations(room, reservationDate, blocks);
+        if (!existingRes.isEmpty()) {
+            RSFrontUtils.showWarn("Uno o mas bloques ya se encuentran reservados");
+            return;
+        }
+
+        srvReservation.saveEventual(znow, user, room, reservationDate, blocks);
+        RSFrontUtils.showInfo("Reserva realizada");
+        clear();
+    }
+
+    private void clear() {
+        clearRows();
+    }
+
+    private void clearRows() {
+        rows = new ArrayList<>();
+        for (RSBlock block : RSBlock.values()) {
+//            Map<RSDayOfWeek, Boolean> map = new HashMap<>();
+//            for (RSDayOfWeek day : RSDayOfWeek.values()) {
+//                map.put(day, false);
+//            }
+            rows.add(new RSDtoReservationEventualRow(block, false));
+        }
+        grid.setItems(rows);
     }
 
     @Override
