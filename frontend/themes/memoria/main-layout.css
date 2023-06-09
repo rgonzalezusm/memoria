@@ -18,17 +18,6 @@ vaadin-scroller[slot="drawer"] {
 /************************************************/
 /* MAIN LAYOUT                                  */
 /************************************************/
-#date-time-container {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    justify-content: center;
-    padding: 0;
-    margin: 0;
-    font-weight: bold;
-    text-align: center;
-}
-
 .MainLayout-divHeader {
     display: flex;
     flex-direction: row;
@@ -44,6 +33,11 @@ vaadin-scroller[slot="drawer"] {
 .default-view {
     padding: 50px;
     padding-top: 10px;
+}
+
+.annon-view {
+    width: 1024px;
+    margin: auto;
 }
 
 @media only screen and (max-width: 1026px) {

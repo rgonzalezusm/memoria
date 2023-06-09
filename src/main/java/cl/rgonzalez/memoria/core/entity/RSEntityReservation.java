@@ -18,8 +18,9 @@ public class RSEntityReservation extends RSAbstractEntity {
 
     private ZonedDateTime reservationDate;
 
-    @ManyToOne
-    private RSEntityUser user;
+    private String name;
+    private String course;
+    private Integer parallel;
 
     @ManyToOne
     private RSEntityRoom room;

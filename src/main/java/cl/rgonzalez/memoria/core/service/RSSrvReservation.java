@@ -8,7 +8,7 @@ import cl.rgonzalez.memoria.core.entity.RSEntityReservation;
 import cl.rgonzalez.memoria.core.entity.RSEntityRoom;
 import cl.rgonzalez.memoria.core.entity.RSEntityUser;
 import cl.rgonzalez.memoria.core.repo.RSRepoReservation;
-import cl.rgonzalez.memoria.ui.RSFrontUtils;
+import cl.rgonzalez.memoria.RSFrontUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +26,8 @@ public class RSSrvReservation {
     RSRepoReservation repo;
 
     public void saveSemestral(
-            ZonedDateTime reservationDate, RSEntityUser user,
+            String name, String course, Integer parallel,
+            ZonedDateTime reservationDate,
             RSEntityRoom room, int year, int semester,
             List<RSDtoBlockAndDay> reservations
     ) {
@@ -36,7 +37,9 @@ public class RSSrvReservation {
             RSEntityReservation r = new RSEntityReservation();
             r.setType(RSReservationType.SEMESTRAL.getValue());
             r.setReservationDate(reservationDate);
-            r.setUser(user);
+            r.setName(name);
+            r.setCourse(course);
+            r.setParallel(parallel);
             r.setRoom(room);
             r.setBlock(res.getBlock().getValue());
             r.setYear(year);
@@ -51,15 +54,20 @@ public class RSSrvReservation {
     }
 
     public void saveEventual(
+            String name, String course, Integer parallel,
             ZonedDateTime reservationDate, RSEntityUser user,
             RSEntityRoom room, LocalDate date, List<RSBlock> blocks
     ) {
         List<RSEntityReservation> list = new ArrayList<>();
         for (RSBlock block : blocks) {
+
+
             RSEntityReservation r = new RSEntityReservation();
             r.setType(RSReservationType.EVENTUAL.getValue());
             r.setReservationDate(reservationDate);
-            r.setUser(user);
+            r.setName(name);
+            r.setCourse(course);
+            r.setParallel(parallel);
             r.setRoom(room);
             r.setBlock(block.getValue());
             r.setYear(date.getYear());
@@ -80,11 +88,9 @@ public class RSSrvReservation {
         return repo.findByYearAndSemester(year, semester);
     }
 
-    public List<RSEntityReservation> findByUser(RSEntityUser user) {
-        return repo.findByUser(user);
-    }
-
-    public List<RSEntityReservation> findSemestralReservations(RSEntityRoom room, int year, Integer semester, List<RSDtoBlockAndDay> reservations) {
+    public List<RSEntityReservation> findSemestralReservations(
+            RSEntityRoom room, int year, Integer semester, List<RSDtoBlockAndDay> reservations
+    ) {
         List<RSEntityReservation> list = new ArrayList<>();
         for (RSDtoBlockAndDay r : reservations) {
             RSBlock block = r.getBlock();
@@ -95,7 +101,9 @@ public class RSSrvReservation {
         return list;
     }
 
-    public List<RSEntityReservation> findEventualReservations(RSEntityRoom room, LocalDate reservationDate, List<RSBlock> blocks) {
+    public List<RSEntityReservation> findEventualReservations(
+            RSEntityRoom room, LocalDate reservationDate, List<RSBlock> blocks
+    ) {
         int year = reservationDate.getYear();
         int month = reservationDate.getMonthValue();
         int day = reservationDate.getDayOfMonth();
