@@ -13,6 +13,7 @@ import cl.rgonzalez.memoria.uiannon.RSMainLayoutAnnon;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.DetachEvent;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -35,7 +36,7 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.*;
 
-@PageTitle("Inicio")
+@PageTitle("Solicitud de Reserva Semestral")
 @Route(value = "semestral", layout = RSMainLayoutAnnon.class)
 @AnonymousAllowed
 public class RSViewAnnonSemestral extends Div {
@@ -43,7 +44,6 @@ public class RSViewAnnonSemestral extends Div {
     private RSSrvRoom srvRoom;
     private RSSrvReservation srvReservation;
     private List<RSDtoReservationSemestralRow> rows = new ArrayList<>();
-    ;
     //
     private TextField textName = new TextField();
     private TextField textCourse = new TextField();
@@ -66,7 +66,7 @@ public class RSViewAnnonSemestral extends Div {
         this.srvReservation = srvReservation;
         addClassName("annon-view");
 
-        add(new H3("Reserva Semestral"));
+        add(new H3("Solicitud de Reserva Semestral"));
         add(createReservationForm());
         add(buttonOk);
 
@@ -181,8 +181,9 @@ public class RSViewAnnonSemestral extends Div {
         }
 
         srvReservation.saveSemestral(name, course, par, znow, room, year, semester, reservations);
-        RSFrontUtils.showInfo("Reserva realizada");
-        clear();
+//        RSFrontUtils.showInfo("Reserva realizada");
+//        clear();
+        UI.getCurrent().navigate("registro");
     }
 
     private void clear() {
@@ -228,7 +229,7 @@ public class RSViewAnnonSemestral extends Div {
         for (RSBlock block : RSBlock.values()) {
             Map<RSDayOfWeek, Boolean> map = new HashMap<>();
             for (RSDayOfWeek dow : RSDayOfWeek.values()) {
-                map.put(dow, reservedSet.contains(block.getValue() + "-" + dow));
+                map.put(dow, reservedSet.contains(block.getValue() + "-" + dow.getValue()));
             }
             rows.add(new RSDtoReservationSemestralRow(block, map));
         }

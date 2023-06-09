@@ -18,11 +18,15 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -34,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@PageTitle("Inicio")
+@PageTitle("Solicitud de Reserva Eventual")
 @Route(value = "eventual", layout = RSMainLayoutAnnon.class)
 @AnonymousAllowed
 public class RSViewAnnonEventual extends VerticalLayout {
@@ -42,8 +46,12 @@ public class RSViewAnnonEventual extends VerticalLayout {
     private RSSrvRoom srvRoom;
     private RSSrvReservation srvReservation;
     //
-    private ComboBox<RSEntityRoom> comboRoom = new ComboBox<>("Sala");
-    private DatePicker datePicker = new DatePicker("Dia");
+    private TextField textName = new TextField();
+    private TextField textCourse = new TextField();
+    private IntegerField textParallel = new IntegerField();
+    //
+    private ComboBox<RSEntityRoom> comboRoom = new ComboBox<>();
+    private DatePicker datePicker = new DatePicker();
     private Grid<RSDtoReservationEventualRow> grid = new Grid<>();
     private Button buttonOk = new Button("Reservar");
     private Button buttonRoomDescription = new Button(VaadinIcon.FILE_TEXT.create());
@@ -54,10 +62,10 @@ public class RSViewAnnonEventual extends VerticalLayout {
     public RSViewAnnonEventual(RSSrvRoom srvRoom, RSSrvReservation srvReservation) {
         this.srvRoom = srvRoom;
         this.srvReservation = srvReservation;
-        addClassName("default-view");
+        addClassName("annon-view");
 
+        add(new H3("Solicitud de Reserva Eventual"));
         add(createReservationForm());
-        add(createBlocksGrid());
         add(buttonOk);
 
         buttonOk.addClickListener(e -> reserveAction());
@@ -68,18 +76,30 @@ public class RSViewAnnonEventual extends VerticalLayout {
     }
 
     private Component createReservationForm() {
+        VerticalLayout vl = new VerticalLayout();
+
         comboRoom.setItemLabelGenerator(RSEntityRoom::getName);
         datePicker.setI18n(RSFrontUtils.createDatePickerI18n());
         datePicker.setValue(LocalDate.now());
 
-        HorizontalLayout hl = new HorizontalLayout();
-        hl.setDefaultVerticalComponentAlignment(Alignment.END);
-        hl.add(comboRoom);
-        hl.add(datePicker);
-
+        textName.setWidth("400px");
+        textCourse.setWidth("250px");
+        textParallel.setWidth("100px");
+        comboRoom.setWidth("150px");
         comboRoom.setWidth("150px");
 
-        return hl;
+        FormLayout fl = new FormLayout();
+        fl.setWidth("500px");
+        fl.addFormItem(textName, "Nombre");
+        fl.addFormItem(textCourse, "Ramo");
+        fl.addFormItem(textParallel, "Paralelo");
+        fl.addFormItem(comboRoom, "Sala");
+        fl.addFormItem(datePicker, "Fecha");
+
+        vl.add(fl);
+        vl.add(createBlocksGrid());
+
+        return vl;
     }
 
     private Component createBlocksGrid() {
